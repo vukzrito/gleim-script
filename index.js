@@ -4,10 +4,7 @@ const { v4: uuidv4 } = require('uuid');
 var fs = require('fs');
 
 var questionsFolder = uuidv4();
-fs.mkdirSync(`./${questionsFolder}`);
-fs.mkdirSync(`./${questionsFolder}/questions`);
-fs.mkdirSync(`./${questionsFolder}/answers`);
-console.log(`Saving questions to ${questionsFolder}`);
+
 var numberOfQuestions = 0;
 
 (async () => {
@@ -21,6 +18,7 @@ var numberOfQuestions = 0;
 
     await page.setDefaultNavigationTimeout(0);
     await login(page);
+    createFolders();
 
     await mockAnswerQuestions(page);
     // setTimeout(async () => {
@@ -31,9 +29,14 @@ var numberOfQuestions = 0;
     //await browser.close();
 })();
 
-
+function createFolders() {
+    fs.mkdirSync(`./${questionsFolder}`);
+    fs.mkdirSync(`./${questionsFolder}/questions`);
+    fs.mkdirSync(`./${questionsFolder}/answers`);
+    console.log(`Saving questions to ${questionsFolder}`);
+}
 async function mockAnswerQuestions(page) {
-    await page.goto('https://www.gleim.com/testprep/cia/2019/part2?action=test', { waitUntil: 'networkidle2' });
+    await page.goto('https://www.gleim.com/testprep/cia/2019/part3?action=test', { waitUntil: 'networkidle2' });
     //click resume button
     // (await page.$eval('.linkbutton', a => a
     //     .filter(a => a.textContent === 'Resume Session')
@@ -152,7 +155,7 @@ async function createExam(page) {
 }
 
 async function login(page) {
-    await page.goto('https://www.gleim.com/account/index.php');
+    await page.goto('https://www.gleim.com/account/index.php', { waitUntil: 'networkidle2' });
     await page.waitFor(3000);
     await page.type('#email', 'mukie4t@gmail.com');
     await page.type('#password', 'Amukelani22');
